@@ -25,12 +25,19 @@ const server = new ApolloServer({
 
 // Start the server
 const startServer = async () => {
+  // Railway expects port 8080
+  const PORT = process.env.PORT || 8080;
+
   const { url } = await startStandaloneServer(server, {
-    listen: { port: process.env.PORT || 4000 },
+    listen: { port: PORT },
   });
-  
+
   console.log(`🚀 Server ready at: ${url}`);
   console.log(`📡 Using API URL: ${config.API_URL}`);
+  console.log(`🔌 Listening on port: ${PORT}`);
 };
 
-startServer();
+startServer().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});
