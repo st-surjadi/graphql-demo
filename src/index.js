@@ -1,9 +1,11 @@
+import express from "express";
 import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { expressMiddleware } from "@apollo/server/express4";
 import config from "./config/environment.js";
 import userResolvers from "./resolvers/userResolvers.js";
 import typeDefs from "./schema/_typeDefs.js";
 import accountResolvers from "./resolvers/accountResolvers.js";
+import cors from "cors";
 
 // Resolvers
 const resolvers = {
@@ -23,21 +25,32 @@ const server = new ApolloServer({
   introspection: true,
 });
 
-// Start the server
-const startServer = async () => {
-  // Railway expects port 8080
-  const PORT = process.env.PORT || 8080;
+const app = express();
 
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: PORT },
+app.use(express.json());
+
+const startServer = async () => {
+  await server.start();
+
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');
   });
 
-  console.log(`🚀 Server ready at: ${url}`);
-  console.log(`📡 Using API URL: ${config.API_URL}`);
-  console.log(`🔌 Listening on port: ${PORT}`);
+  app.use(
+    "/graphql",
+    cors({
+      origin: "*",
+      credentials: true,
+    }),
+    express.json(),
+    expressMiddleware(server)
+  );
+
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    console.log(`📡 Using API URL: ${config.API_URL}`);
+  });
 };
 
-startServer().catch((err) => {
-  console.error("Failed to start server:", err);
-  process.exit(1);
-});
+startServer(); // Start the server asynchronously
