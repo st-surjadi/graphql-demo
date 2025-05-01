@@ -1,10 +1,11 @@
 import express from "express";
 import { ApolloServer } from "@apollo/server";
-import { expressMiddleware } from "@apollo/server/express4"; // Apollo Server's express middleware
+import { expressMiddleware } from "@apollo/server/express4";
 import config from "./config/environment.js";
 import userResolvers from "./resolvers/userResolvers.js";
 import typeDefs from "./schema/_typeDefs.js";
 import accountResolvers from "./resolvers/accountResolvers.js";
+import cors from "cors";
 
 // Resolvers
 const resolvers = {
@@ -22,19 +23,34 @@ const server = new ApolloServer({
   typeDefs: typeDefs,
   resolvers: resolvers,
   introspection: true,
-  playground: true, // Still enable GraphQL Playground for local dev (optional for production)
 });
 
-// Initialize Express app
 const app = express();
 
-// Add Apollo Server middleware to Express app
-app.use("/graphql", expressMiddleware(server));
+app.use(express.json());
 
-// Start the server
-const PORT = process.env.PORT || 4000;
+const startServer = async () => {
+  await server.start();
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
-  console.log(`📡 Using API URL: ${config.API_URL}`);
-});
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
+
+  app.use(
+    "/graphql",
+    cors({
+      origin: "*",
+      credentials: true,
+    }),
+    express.json(),
+    expressMiddleware(server)
+  );
+
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    console.log(`📡 Using API URL: ${config.API_URL}`);
+  });
+};
+
+startServer(); // Start the server asynchronously
