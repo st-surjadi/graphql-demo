@@ -1,5 +1,6 @@
+import express from "express";
 import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { expressMiddleware } from "@apollo/server/express4"; // Apollo Server's express middleware
 import config from "./config/environment.js";
 import userResolvers from "./resolvers/userResolvers.js";
 import typeDefs from "./schema/_typeDefs.js";
@@ -20,18 +21,20 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs: typeDefs,
   resolvers: resolvers,
+  introspection: true,
+  playground: true, // Still enable GraphQL Playground for local dev (optional for production)
 });
 
+// Initialize Express app
+const app = express();
+
+// Add Apollo Server middleware to Express app
+app.use("/graphql", expressMiddleware(server));
+
 // Start the server
-const startServer = async () => {
-  const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: PORT },
-  });
-
-  console.log(`🚀 Server ready at: ${url}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
   console.log(`📡 Using API URL: ${config.API_URL}`);
-};
-
-startServer();
+});
