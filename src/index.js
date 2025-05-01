@@ -28,13 +28,18 @@ const server = new ApolloServer({
 // Start the server
 const startServer = async () => {
   const PORT = process.env.PORT || 4000;
+  console.log("🚀 Starting Apollo Server on port", PORT);
 
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: PORT },
-  });
-
-  console.log(`🚀 Server ready at: ${url}`);
-  console.log(`📡 Using API URL: ${config.API_URL}`);
+  try {
+    const { url } = await startStandaloneServer(server, {
+      listen: { port: PORT },
+    });
+    console.log(`✅ Server ready at ${url}`);
+    console.log(`📡 API URL: ${config.API_URL}`);
+  } catch (err) {
+    console.error("❌ Server failed to start", err);
+    process.exit(1);
+  }
 };
 
 startServer();
