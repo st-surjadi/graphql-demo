@@ -22,7 +22,6 @@ const server = new ApolloServer({
   resolvers: resolvers,
 
   introspection: true,
-  playground: true,
 });
 
 // Start the server
