@@ -7,6 +7,11 @@ import typeDefs from "./schema/_typeDefs.js";
 import accountResolvers from "./resolvers/accountResolvers.js";
 import cors from "cors";
 import timeout from "connect-timeout";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Resolvers
 const resolvers = {
@@ -38,9 +43,8 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Handle favicon.ico requests
 app.get("/favicon.ico", (req, res) => {
-  res.status(204).end();
+  res.sendFile(path.join(__dirname, "favicon.ico"));
 });
 
 const startServer = async () => {
