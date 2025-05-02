@@ -6,6 +6,7 @@ import userResolvers from "./resolvers/userResolvers.js";
 import typeDefs from "./schema/_typeDefs.js";
 import accountResolvers from "./resolvers/accountResolvers.js";
 import cors from "cors";
+import timeout from "connect-timeout";
 
 // Resolvers
 const resolvers = {
@@ -27,13 +28,30 @@ const server = new ApolloServer({
 
 const app = express();
 
+// Set request timeout to 30 seconds
+app.use(timeout("30s"));
+
+// Handle timeout errors
+app.use((req, res, next) => {
+  if (!req.timedout) next();
+});
+
 app.use(express.json());
+
+// Handle favicon.ico requests
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).end();
+});
 
 const startServer = async () => {
   await server.start();
 
-  app.get('/health', (req, res) => {
-    res.status(200).send('OK');
+  app.get("/health", (req, res) => {
+    res.status(200).json({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    });
   });
 
   app.use(
@@ -43,8 +61,27 @@ const startServer = async () => {
       credentials: true,
     }),
     express.json(),
-    expressMiddleware(server)
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        if (req.timedout) {
+          throw new Error("Request timeout");
+        }
+        return {};
+      },
+    })
   );
+
+  // Error handling middleware
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message:
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "An error occurred",
+    });
+  });
 
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
@@ -53,4 +90,4 @@ const startServer = async () => {
   });
 };
 
-startServer(); // Start the server asynchronously
+startServer();
