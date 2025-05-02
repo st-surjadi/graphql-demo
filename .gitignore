@@ -2,3 +2,6 @@
 .env
 .env.development
 .env.production
+
+Dockerfile
+docker-compose.yml

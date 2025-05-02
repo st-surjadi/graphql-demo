@@ -1,9 +1,10 @@
 export const accountTypeDefs = `
   type Account {
     id: ID!
-    userId: ID!
-    type: String!
-    balance: Float!
+    bank_code: Int!
+    account_number: String!
+    account_type: String!
+    balance: Float # Optional
     user: User
   }
 

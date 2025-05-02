@@ -25,6 +25,12 @@ const resolvers = {
   Mutation: {
     ...accountResolvers.Mutation,
   },
+  Account: {
+    ...accountResolvers.Account,
+  },
+  User: {
+    ...userResolvers.User,
+  },
 };
 
 const server = new ApolloServer({

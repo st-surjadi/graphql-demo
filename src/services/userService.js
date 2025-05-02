@@ -7,19 +7,19 @@ const userService = {
       const response = await fetch(`${config.API_URL}/users`);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error("Failed to fetch users");
       }
 
-      const result = await response.json();
+      const data = await response.json();
 
-      if (!result || !result.data) {
+      if (!data || !data.data) {
         throw new Error("Invalid response structure");
       }
 
-      return result.data;
+      return data.data;
     } catch (error) {
       console.error("Error fetching users:", error);
-      return [];
+      throw error;
     }
   },
 
@@ -28,19 +28,19 @@ const userService = {
       const response = await fetch(`${config.API_URL}/users/${id}`);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error("Failed to fetch user");
       }
 
-      const result = await response.json();
+      const data = await response.json();
 
-      if (!result || !result.data) {
+      if (!data || !data.daçta) {
         throw new Error("Invalid response structure");
       }
 
-      return result.data;
+      return data.data;
     } catch (error) {
       console.error("Error fetching user:", error);
-      return null;
+      throw error;
     }
   },
 };

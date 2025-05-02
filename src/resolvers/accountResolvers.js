@@ -1,4 +1,5 @@
 import accountService from "../services/accountService.js";
+import userService from "../services/userService.js";
 
 const accountResolvers = {
   Query: {
@@ -13,6 +14,16 @@ const accountResolvers = {
   Mutation: {
     createAccount: async (_, { input }) => {
       return accountService.createAccount(input);
+    },
+  },
+
+  Account: {
+    user: async (account) => {
+      if (account.user) {
+        return account.user;
+      }
+
+      return userService.getUserById(account.user_id);
     },
   },
 };
