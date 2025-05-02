@@ -33,7 +33,7 @@ const userService = {
 
       const data = await response.json();
 
-      if (!data || !data.daçta) {
+      if (!data || !data.data) {
         throw new Error("Invalid response structure");
       }
 
