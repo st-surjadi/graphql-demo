@@ -1,24 +1,38 @@
-const accountTypeDefs = `#graphql
+export const accountTypeDefs = `
   type Account {
     id: ID!
-    user_id: ID!
-    bank_code: String!
-    account_number: String!
-    account_type: String!
-    balance: Float
-  }
-
-  type AccountCreationData {
-    account_id: ID!
+    userId: ID!
+    type: String!
+    balance: Float!
+    user: User
   }
 
   input CreateAccountInput {
-    user_id: ID!
-    bank_code: String!
-    account_number: String!
-    account_type: String!
-    balance: Int!
+    userId: ID!
+    type: String!
+    initialBalance: Float!
+  }
+
+  type AccountCreationData {
+    id: ID!
+    userId: ID!
+    type: String!
+    balance: Float!
+  }
+
+  union ResponseData = AccountCreationData
+
+  type ApiResponse {
+    message: String!
+    data: AccountCreationData!
+  }
+
+  extend type Query {
+    accountById(id: ID!): Account
+    accountsByUserId(userId: ID!): [Account]
+  }
+
+  extend type Mutation {
+    createAccount(input: CreateAccountInput!): ApiResponse
   }
 `;
-
-export default accountTypeDefs;

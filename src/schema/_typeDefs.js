@@ -1,27 +1,15 @@
-import userTypeDefs from "./userTypeDefs.js";
-import accountTypeDefs from "./accountTypeDefs.js";
+import { healthTypeDefs } from "./healthTypeDefs.js";
+import { userTypeDefs } from "./userTypeDefs.js";
+import { accountTypeDefs } from "./accountTypeDefs.js";
 
-const typeDefs = `#graphql
-  ${userTypeDefs}
-  ${accountTypeDefs}
-
-  union ResponseData = AccountCreationData
-
-  type ApiResponse {
-    message: String!
-    data: AccountCreationData!
-  }
-
+const baseTypeDefs = `
   type Query {
-    users: [User]
-    user(id: ID!): User
-    accountById(id: ID!): Account
-    accountsByUserId(userId: ID!): [Account]
+    _empty: String
   }
 
   type Mutation {
-    createAccount(input: CreateAccountInput!): ApiResponse
+    _empty: String
   }
 `;
 
-export default typeDefs;
+export default [baseTypeDefs, healthTypeDefs, userTypeDefs, accountTypeDefs];

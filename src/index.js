@@ -5,6 +5,7 @@ import config from "./config/environment.js";
 import userResolvers from "./resolvers/userResolvers.js";
 import typeDefs from "./schema/_typeDefs.js";
 import accountResolvers from "./resolvers/accountResolvers.js";
+import { healthResolvers } from "./resolvers/healthResolvers.js";
 import cors from "cors";
 import timeout from "connect-timeout";
 import path from "path";
@@ -19,6 +20,7 @@ const resolvers = {
   Query: {
     ...userResolvers.Query,
     ...accountResolvers.Query,
+    ...healthResolvers.Query,
   },
   Mutation: {
     ...accountResolvers.Mutation,

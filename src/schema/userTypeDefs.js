@@ -1,4 +1,4 @@
-const userTypeDefs = `#graphql
+export const userTypeDefs = `
   type User {
     id: ID!
     name: String!
@@ -10,6 +10,9 @@ const userTypeDefs = `#graphql
     profile_picture: String
     accounts: [Account]
   }
-`;
 
-export default userTypeDefs;
+  extend type Query {
+    users: [User]
+    user(id: ID!): User
+  }
+`;
