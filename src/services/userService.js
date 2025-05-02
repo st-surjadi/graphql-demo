@@ -2,9 +2,20 @@ import fetch from "node-fetch";
 import config from "../config/environment.js";
 
 const userService = {
-  getAllUsers: async () => {
+  getAllUsers: async (params) => {
     try {
-      const response = await fetch(`${config.API_URL}/users`);
+      const url = new URL(`${config.API_URL}/users`);
+
+      // Add each parameter to the URL
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            url.searchParams.append(key, value);
+          }
+        });
+      }
+
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error("Failed to fetch users");

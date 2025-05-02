@@ -3,7 +3,7 @@ import accountService from "../services/accountService.js";
 
 export const userResolvers = {
   Query: {
-    users: () => userService.getAllUsers(),
+    users: (_, params) => userService.getAllUsers(params),
     user: (_, { id }) => userService.getUserById(id),
   },
   User: {
