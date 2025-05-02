@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Apollo Sandbox</title>
+    <link
+      rel="stylesheet"
+      href="https://embeddable-sandbox.cdn.apollographql.com/_latest/embeddable-sandbox.css"
+    />
+  </head>
+  <body>
+    <div id="sandbox" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></div>
+    <script src="https://embeddable-sandbox.cdn.apollographql.com/_latest/embeddable-sandbox.umd.production.min.js"></script>
+    <script>
+      // Get the secret key from the URL query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const secretKey = urlParams.get('key') || 'demo123';
+
+      new window.EmbeddedSandbox({
+        target: '#sandbox',
+        initialEndpoint: window.location.origin + '/graphql',
+        initialState: {
+          document: `query ExampleQuery {
+            # Add your query here
+          }`,
+          variables: {},
+          headers: {
+            'X-Secret-Key': secretKey
+          },
+        },
+        includeCookies: true,
+        endpointIsEditable: false,
+      });
+    </script>
+  </body>
+</html> 

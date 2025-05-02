@@ -9,6 +9,7 @@ import cors from "cors";
 import timeout from "connect-timeout";
 import path from "path";
 import { fileURLToPath } from "url";
+import { checkSandboxAccess } from "./middleware/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +25,6 @@ const resolvers = {
   },
 };
 
-// Create Apollo Server instance
 const server = new ApolloServer({
   typeDefs: typeDefs,
   resolvers: resolvers,
@@ -43,8 +43,16 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/favicon.ico", (req, res) => {
   res.sendFile(path.join(__dirname, "favicon.ico"));
+});
+
+// Serve Apollo Sandbox
+app.get("/sandbox", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "sandbox.html"));
 });
 
 const startServer = async () => {
@@ -65,6 +73,7 @@ const startServer = async () => {
       credentials: true,
     }),
     express.json(),
+    checkSandboxAccess,
     expressMiddleware(server, {
       context: async ({ req }) => {
         if (req.timedout) {
@@ -90,6 +99,7 @@ const startServer = async () => {
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
     console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    console.log(`🔍 Apollo Sandbox at http://localhost:${PORT}/sandbox`);
     console.log(`📡 Using API URL: ${config.API_URL}`);
   });
 };
