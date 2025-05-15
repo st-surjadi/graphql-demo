@@ -1,23 +1,32 @@
 export const accountTypeDefs = `
+  enum BankCode {
+    BCA
+    MANDIRI
+  }
+
   type Account {
     id: ID!
-    bank_code: Int!
+    bank_code: BankCode!
     account_number: String!
     account_type: String!
-    balance: Float # Optional
+    balance: Float
     user: User
   }
 
   input CreateAccountInput {
-    userId: ID!
-    type: String!
-    initialBalance: Float!
+    user_id: ID!
+    bank_code: String!
+    account_number: String!
+    account_type: String
+    balance: Float!
   }
 
   type AccountCreationData {
     id: ID!
-    userId: ID!
-    type: String!
+    user_id: ID!
+    bank_code: BankCode!
+    account_number: String!
+    account_type: String!
     balance: Float!
   }
 

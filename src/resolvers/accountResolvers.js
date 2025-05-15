@@ -22,7 +22,6 @@ const accountResolvers = {
       if (account.user) {
         return account.user;
       }
-
       return userService.getUserById(account.user_id);
     },
   },
