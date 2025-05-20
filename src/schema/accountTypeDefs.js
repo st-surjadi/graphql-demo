@@ -1,12 +1,7 @@
 export const accountTypeDefs = `
-  enum BankCode {
-    BCA
-    MANDIRI
-  }
-
   type Account {
     id: ID!
-    bank_code: BankCode!
+    bank_code: String!
     account_number: String!
     account_type: String!
     balance: Float
@@ -24,15 +19,13 @@ export const accountTypeDefs = `
   type AccountCreationData {
     id: ID!
     user_id: ID!
-    bank_code: BankCode!
+    bank_code: String!
     account_number: String!
     account_type: String!
     balance: Float!
   }
 
-  union ResponseData = AccountCreationData
-
-  type ApiResponse {
+  type ApiResponseAccountCreation {
     message: String!
     data: AccountCreationData!
   }
@@ -43,6 +36,6 @@ export const accountTypeDefs = `
   }
 
   extend type Mutation {
-    createAccount(input: CreateAccountInput!): ApiResponse
+    createAccount(input: CreateAccountInput!): ApiResponseAccountCreation!
   }
 `;

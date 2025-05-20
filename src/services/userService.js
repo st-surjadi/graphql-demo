@@ -54,6 +54,29 @@ const userService = {
       throw error;
     }
   },
+
+  createUser: async (userData) => {
+    try {
+      const response = await fetch(`${config.API_URL}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create user");
+      }
+      const data = await response.json();
+      if (!data || !data.data) {
+        throw new Error("Invalid response structure");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
+  },
 };
 
 export default userService;
